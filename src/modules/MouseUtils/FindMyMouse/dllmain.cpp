@@ -144,20 +144,34 @@ public:
         }
     }
 
+    void enabledToggle()
+    {
+	    switch(m_enabled){
+		    	case false:
+	    			m_enabled = true;
+        			Trace::EnableFindMyMouse(true);
+        			std::thread([=]() { FindMyMouseMain(m_hModule, m_findMyMouseSettings); }).detach();
+		    		break;
+	    		case true:
+				m_enabled = false;
+        			Trace::EnableFindMyMouse(false);
+        			FindMyMouseDisable();
+				break;
+		    default:
+		    break;
+	    }
+    }
+
     // Enable the powertoy
     virtual void enable()
     {
-        m_enabled = true;
-        Trace::EnableFindMyMouse(true);
-        std::thread([=]() { FindMyMouseMain(m_hModule, m_findMyMouseSettings); }).detach();
+        enabledToggle();
     }
 
     // Disable the powertoy
     virtual void disable()
     {
-        m_enabled = false;
-        Trace::EnableFindMyMouse(false);
-        FindMyMouseDisable();
+	enabledToggle();
     }
 
     // Returns if the powertoys is enabled
